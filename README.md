@@ -44,5 +44,7 @@ Once the stack is up and running, you can access the following components:
 
 To log in to Kibana and visualize the Nginx logs, use the following credentials:
 
+
 **Username:** elastic
+
 **Password:** changeme%
