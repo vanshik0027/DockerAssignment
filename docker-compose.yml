@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+    ports:
+      - "80:80"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  
+        #- ELASTIC_PASSWORD=your_elasticsearch_password
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.15.2
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./nginx/logs:/var/log/nginx
+    user: root
+    command: ["filebeat", "-e", "-strict.perms=false"]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.2
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    restart: always
+
+volumes:
+  esdata:
+
